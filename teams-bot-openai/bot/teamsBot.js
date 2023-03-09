@@ -9,8 +9,21 @@ const { Configuration, OpenAIApi } = require("openai");
 const speechSdk = require("microsoft-cognitiveservices-speech-sdk");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require("@azure/identity");
-const { Transform } = require("stream");
+const uuidv1 = require('uuidv1');
+const fs = require("fs");
+const { cwd } = require("process");
 
+const voiceNames = [
+  { name: "普通话", value: "zh-CN-YunjianNeural" },
+  {
+    name: "粤语", value: "yue-CN-XiaoMinNeural"
+  },
+  {
+    name: "河南话", value: "zh-CN-henan-YundengNeural"
+  },
+  {
+    name: "东北话", value: "zh-CN-liaoning-XiaobeiNeural"
+  }];
 
 class TeamsBot extends TeamsActivityHandler {
   constructor() {
@@ -33,16 +46,40 @@ class TeamsBot extends TeamsActivityHandler {
         txt = removedMentionText.toLowerCase().replace(/\n|\r/g, "").trim();
       }
 
-      var stream = speechSdk.AudioOutputStream.createPullStream();
+      // Call the open ai to get response
+      // const response = await openai.createCompletion({
+      //   model: "text-davinci-003",
+      //   prompt: txt,
+      //   temperature: 0,
+      //   max_tokens: 2048
+      // });
+      // console.log(response);
+      // await context.sendActivity(response.data.choices[0].text);
+
+
+      // 1.Process the open ai data result to speech
+      // 2.Upload the file to Azure Blob Storage
+      // 3.Send the file as a VoiceCard to teams
+      const audioFile = "voice" + uuidv1() + ".wav";
       const speechConfig = speechSdk.SpeechConfig.fromSubscription(config.cognitiveServiceKey, config.cognitiveServiceRegion);
-      const audioConfig = speechSdk.AudioConfig.fromStreamOutput(stream);
-      speechConfig.speechSynthesisVoiceName = "en-US-JennyNeural";
+      const audioConfig = speechSdk.AudioConfig.fromAudioFileOutput(audioFile);
+      speechConfig.speechSynthesisVoiceName = voiceNames[3].value;
 
       var synthesizer = new speechSdk.SpeechSynthesizer(speechConfig, audioConfig);
       synthesizer.speakTextAsync(txt,
         function (result) {
           if (result.reason === speechSdk.ResultReason.SynthesizingAudioCompleted) {
-            console.log(stream);
+            //Upload the audio file to azure blob storage which convert by Azure Text To Speech
+            const blobServiceClient = BlobServiceClient.fromConnectionString(config.azureStorageConnectionString);
+            const containerClient = blobServiceClient.getContainerClient(config.azureStorageAccountContainerName);
+            const blockBlobClient = containerClient.getBlockBlobClient(audioFile);
+            var result = blockBlobClient.uploadFile(audioFile);
+            console.log(blockBlobClient.url);
+            //delete the audio file after 60s
+            setTimeout(() => {
+              fs.rm(audioFile);
+            }, 60000);
+
             console.log("synthesis finished.");
           } else {
             console.error("Speech synthesis canceled, " + result.errorDetails +
@@ -56,18 +93,6 @@ class TeamsBot extends TeamsActivityHandler {
           synthesizer.close();
           synthesizer = null;
         });
-
-      // const response = await openai.createCompletion({
-      //   model: "text-davinci-003",
-      //   prompt: txt,
-      //   temperature: 0,
-      //   max_tokens: 2048
-      // });
-
-      // console.log(response);
-
-      // await context.sendActivity(response.data.choices[0].text);
-      await this.handleUploadVoiceFileToAzureBlobStorage(stream);
       // By calling next() you ensure that the next BotHandler is run.
       await next();
     });
@@ -85,27 +110,6 @@ class TeamsBot extends TeamsActivityHandler {
       }
       await next();
     });
-  }
-
-  async handleUploadVoiceFileToAzureBlobStorage(stream) {
-    const blobServiceClient = new BlobServiceClient(
-      `https://${config.azureStorageAccountName}.blob.core.windows.net`,
-      new DefaultAzureCredential()
-    );
-    var uuidv1 = require('uuidv1');
-    const blobName = "voice" + uuidv1() + ".wav";
-    const containerClient = blobServiceClient.getContainerClient(config.azureStorageAccountContainerName);
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-    const bufferSize = 4 * 1024 * 1024;
-    const maxConcurrency = 20;
-    const transformedStream = stream.pipe(new Transform({
-      transform(chunk, encoding, callback) {
-        console.log(chunk);
-        callback(null, chunk);
-      },
-      decodeStrings: false
-    }));
-    await blockBlobClient.uploadStream(transformedStream, bufferSize, maxConcurrency);
   }
 }
 
