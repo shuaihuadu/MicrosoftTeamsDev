@@ -20,6 +20,7 @@
     "@azure/storage-blob": "^12.13.0",
     "@microsoft/adaptivecards-tools": "^1.0.0",
     "botbuilder": "^4.18.0",
+    "botbuilder-dialogs": "^4.19.2",
     "microsoft-cognitiveservices-speech-sdk": "^1.26.0",
     "openai": "^3.2.1",
     "restify": "^10.0.0",

@@ -5,24 +5,24 @@
       "type": "TextBlock",
       "size": "Medium",
       "weight": "Bolder",
-      "text": "Your Hello World Bot is Running"
+      "text": "你的ChatGPT机器人已经开始运行"
     },
     {
       "type": "TextBlock",
-      "text": "Congratulations! Your hello world bot is running. Click the documentation below to learn more about Bots and the Teams Toolkit.",
+      "text": "我是一个基于OpenAI打造的智能机器人，你可以问我任何问题",
       "wrap": true
     }
   ],
   "actions": [
     {
       "type": "Action.OpenUrl",
-      "title": "Bot Framework Docs",
+      "title": "查看Bot Framework文档",
       "url": "https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0"
     },
     {
       "type": "Action.OpenUrl",
-      "title": "Teams Toolkit Docs",
-      "url": "https://aka.ms/teamsfx-docs"
+      "title": "查看Open AI文档",
+      "url": "https://github.com/openai/openai-cookbook"
     }
   ],
   "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
