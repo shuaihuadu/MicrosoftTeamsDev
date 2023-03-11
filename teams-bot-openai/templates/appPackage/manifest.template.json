@@ -5,10 +5,10 @@
     "id": "{{state.fx-resource-appstudio.teamsAppId}}",
     "packageName": "com.microsoft.teams.extension",
     "developer": {
-        "name": "Teams App, Inc.",
-        "websiteUrl": "https://www.example.com",
-        "privacyUrl": "https://www.example.com/termofuse",
-        "termsOfUseUrl": "https://www.example.com/privacy"
+        "name": "ShuaiHua Du",
+        "websiteUrl": "https://github.com/shuaihuadu/MicrosoftTeamsDev/tree/main/teams-bot-openai",
+        "privacyUrl": "https://github.com/shuaihuadu/MicrosoftTeamsDev/tree/main/teams-bot-openai",
+        "termsOfUseUrl": "https://github.com/shuaihuadu/MicrosoftTeamsDev/tree/main/teams-bot-openai"
     },
     "icons": {
         "color": "{{config.manifest.icons.color}}",
@@ -42,12 +42,8 @@
                     ],
                     "commands": [
                         {
-                            "title": "welcome",
-                            "description": "Resend welcome card of this Bot"
-                        },
-                        {
-                            "title": "learn",
-                            "description": "Learn about Adaptive Card and Bot Command"
+                            "title": "hello",
+                            "description": "向ChatGPT机器人问好"
                         }
                     ]
                 }

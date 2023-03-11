@@ -1,0 +1,30 @@
+{
+  "type": "AdaptiveCard",
+  "body": [
+    {
+      "type": "TextBlock",
+      "size": "Medium",
+      "weight": "Bolder",
+      "text": "使用[${voiceName}]进行语音转换已完成"
+    },
+    {
+      "type": "TextBlock",
+      "text": "对于您的问题，我同时也将回答内容转换成了语音，如果您需要的话可以复制下面链接或点击下载语音文件按钮进行下载。",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "语音文件链接：${url}",
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "下载语音文件",
+      "url": "${url}"
+    }
+  ],
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.4"
+}
