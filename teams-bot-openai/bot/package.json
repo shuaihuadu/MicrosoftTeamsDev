@@ -23,6 +23,7 @@
     "botbuilder-dialogs": "^4.19.2",
     "lodash": "^4.17.21",
     "microsoft-cognitiveservices-speech-sdk": "^1.26.0",
+    "on-change": "^4.0.2",
     "openai": "^3.2.1",
     "restify": "^10.0.0",
     "uuidv1": "^1.6.14"

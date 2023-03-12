@@ -4,7 +4,7 @@ param userAssignedIdentityId string
 
 var resourceBaseName = provisionParameters.resourceBaseName
 var serverfarmsName = contains(provisionParameters, 'webAppServerfarmsName') ? provisionParameters['webAppServerfarmsName'] : '${resourceBaseName}bot' // Try to read name for App Service Plan from parameters
-var webAppSKU = contains(provisionParameters, 'webAppSKU') ? provisionParameters['webAppSKU'] : 'F1'//'B1' // Try to read SKU for Azure Web App from parameters
+var webAppSKU = contains(provisionParameters, 'webAppSKU') ? provisionParameters['webAppSKU'] : 'B1' // Try to read SKU for Azure Web App from parameters
 var webAppName = contains(provisionParameters, 'webAppSitesName') ? provisionParameters['webAppSitesName'] : '${resourceBaseName}bot' // Try to read name for Azure Web App from parameters
 
 // Compute resources for your Web App

@@ -1,0 +1,32 @@
+{
+    "solution": {
+        "provisionSucceeded": true,
+        "teamsAppTenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "subscriptionId": "3bf16512-5dd6-4a8c-85ac-8c6344741c9a",
+        "subscriptionName": "Azure for Students",
+        "tenantId": "1aa9fe4a-45e4-42c5-aade-fbf6015f455e",
+        "needCreateResourceGroup": false,
+        "resourceGroupName": "bot-framework-quickstart",
+        "location": "eastus",
+        "resourceNameSuffix": "41ab73"
+    },
+    "fx-resource-appstudio": {
+        "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "teamsAppId": "12e7aa6d-f8aa-401c-8e8a-305a7ac5b55a"
+    },
+    "fx-resource-bot": {
+        "botId": "c644d30e-7810-4351-b611-451cf2d8ef38",
+        "botPassword": "{{fx-resource-bot.botPassword}}",
+        "skuName": "B1",
+        "siteName": "teamsbotoped2991bot",
+        "domain": "teamsbotoped2991bot.azurewebsites.net",
+        "appServicePlanName": "teamsbotoped2991bot",
+        "resourceId": "/subscriptions/3bf16512-5dd6-4a8c-85ac-8c6344741c9a/resourceGroups/bot-framework-quickstart/providers/Microsoft.Web/sites/teamsbotoped2991bot",
+        "siteEndpoint": "https://teamsbotoped2991bot.azurewebsites.net"
+    },
+    "fx-resource-identity": {
+        "identityName": "teamsbotoped2991",
+        "identityResourceId": "/subscriptions/3bf16512-5dd6-4a8c-85ac-8c6344741c9a/resourceGroups/bot-framework-quickstart/providers/Microsoft.ManagedIdentity/userAssignedIdentities/teamsbotoped2991",
+        "identityClientId": "78be2b9e-08fc-4fca-962e-8bbfc09f703c"
+    }
+}

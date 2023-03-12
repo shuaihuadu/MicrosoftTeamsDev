@@ -6,7 +6,8 @@ const config = {
   cognitiveServiceRegion: process.env.COGNITIVE_SERVICE_REGION,
   cognitiveServiceEndpoint: process.env.COGNITIVE_SERVICE_ENDPOINT,
   azureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
-  azureStorageAccountContainerName: process.env.AZURE_STORAGE_ACCOUNT_CONTAINER_NAME
+  azureStorageAccountContainerName: process.env.AZURE_STORAGE_ACCOUNT_CONTAINER_NAME,
+  azureStorageAccountContainerUrl: process.env.AZURE_STORAGE_ACCOUNT_CONTAINER_URL
 };
 
 module.exports = config;
