@@ -44,9 +44,9 @@ class TeamsBot extends TeamsActivityHandler {
           if (!voiceName) {
             voiceName = voiceNames[0];
           }
+          this.chatData.voiceName = voiceName;
           const audioFile = ["voice", uuidv1(), ".wav"].join("");
           this.textToSpeech(audioFile);
-          this.chatData.voiceName = voiceName;
           this.chatData.audioFlileUrl = [config.azureStorageAccountContainerUrl, audioFile].join("/");
           const card = cardTools.AdaptiveCards.declare(rawAudioCard).render(this.chatData);
           await context.sendActivity({ attachments: [CardFactory.adaptiveCard(card)] });
