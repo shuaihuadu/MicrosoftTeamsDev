@@ -2,6 +2,7 @@ const { TeamsActivityHandler, CardFactory, TurnContext, MessageFactory } = requi
 const { ActionTypes } = require('botframework-schema');
 const rawWelcomeCard = require("./adaptiveCards/welcome.json");
 const rawAudioCard = require("./adaptiveCards/audio.json");
+const imageCard = require("./adaptiveCards/image.json");
 const cardTools = require("@microsoft/adaptivecards-tools");
 const config = require("./config");
 const { Configuration, OpenAIApi } = require("openai");
@@ -10,13 +11,20 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const uuidv1 = require('uuidv1');
 const lodash = require("lodash");
 
+const configuration = new Configuration({
+  apiKey: config.openaiApiKey
+});
+const openai = new OpenAIApi(configuration);
+
 const voiceNames = [
   { type: ActionTypes.ImBack, title: "普通话", value: "zh-CN-YunjianNeural" },
   { type: ActionTypes.ImBack, title: "粤语", value: "yue-CN-XiaoMinNeural" },
-  { type: ActionTypes.ImBack, title: "河南话", value: "zh-CN-henan-YundengNeural" }
-  //{ type: ActionTypes.ImBack, title: "东北话", value: "zh-CN-liaoning-XiaobeiNeural" },
+  //{ type: ActionTypes.ImBack, title: "河南话", value: "zh-CN-henan-YundengNeural" }
+  { type: ActionTypes.ImBack, title: "东北话", value: "zh-CN-liaoning-XiaobeiNeural" },
   //Suggested Actions only show there actions on Teams
 ];
+
+const imageGenerationCommandPrefix = "生成图片";
 
 const voiceNameTitles = lodash.map(voiceNames, "title");
 
@@ -36,7 +44,25 @@ class TeamsBot extends TeamsActivityHandler {
       if (txt === "hello") {
         const card = cardTools.AdaptiveCards.declareWithoutData(rawWelcomeCard).render();
         await context.sendActivity({ attachments: [CardFactory.adaptiveCard(card)] });
-      } else {
+      }
+      else if (lodash.startsWith(txt, imageGenerationCommandPrefix)) {
+        const imageGenerationPrompt = txt.replace(imageGenerationCommandPrefix, "");
+        try {
+          const imageGeneration = await openai.createImage({
+            prompt: imageGenerationPrompt,
+            n: 1,
+            size: "512x512"
+          });
+          const imageUrl = imageGeneration.data.data[0].url;
+          // await context.sendActivity({ attachments: [this.getDalleImageCard(imageGenerationPrompt, imageUrl)] });
+          const card = cardTools.AdaptiveCards.declare(imageCard).render({ imagePrompt: imageGenerationPrompt, imageUrl: imageUrl });
+          await context.sendActivity({ attachments: [CardFactory.adaptiveCard(card)] });
+          await context.sendActivity(imageUrl);
+        } catch (error) {
+          await context.sendActivity("error:" + error);
+        }
+      }
+      else {
         if (voiceNameTitles.includes(txt)) {
           var voiceName = lodash.find(voiceNames, function (v) {
             return v.title === txt;
@@ -53,10 +79,6 @@ class TeamsBot extends TeamsActivityHandler {
         }
         else {
           try {
-            const configuration = new Configuration({
-              apiKey: config.openaiApiKey
-            });
-            const openai = new OpenAIApi(configuration);
             // Send request by the open ai sdk and get response
             const completion = await openai.createCompletion({
               model: "text-davinci-003",
@@ -71,7 +93,6 @@ class TeamsBot extends TeamsActivityHandler {
             await this.sendSuggestedActions(context);
           } catch (error) {
             await context.sendActivity("error:" + JSON.stringify(error));
-            await this.sendSuggestedActions(context);
           }
         }
       }
@@ -132,6 +153,20 @@ class TeamsBot extends TeamsActivityHandler {
     var reply = MessageFactory.text("我还可以将我的回答转换成语音，您如果需要的话可以点击下面的语音选项，我会按照您的选择进行转换。");
     reply.suggestedActions = { "actions": voiceNames, "to": [context.activity.from.id] };
     await context.sendActivity(reply);
+  }
+
+  getDalleImageCard(txt, imageUrl) {
+    return CardFactory.heroCard(
+      txt,
+      CardFactory.images([imageUrl]),
+      CardFactory.actions([
+        {
+          type: "openUrl",
+          title: "查看原图",
+          value: imageUrl
+        }
+      ])
+    );
   }
 }
 

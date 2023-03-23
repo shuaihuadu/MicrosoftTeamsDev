@@ -16,7 +16,7 @@
     },
     "fx-resource-bot": {
         "botId": "c644d30e-7810-4351-b611-451cf2d8ef38",
-        "botPassword": "{{fx-resource-bot.botPassword}}",
+        "botPassword": "",
         "skuName": "B1",
         "siteName": "teamsbotoped2991bot",
         "domain": "teamsbotoped2991bot.azurewebsites.net",
